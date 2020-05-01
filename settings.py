@@ -1,0 +1,13 @@
+BOT_NAME = 'myscraper'
+ROBOTSTXT_OBEY = True
+USER_AGENT = 'MyContact (me@example.com)'
+ITEM_PIPELINES = {'scrapy.pipelines.images.ImagesPipeline': 1}
+IMAGES_STORE = 'images/'
+IMAGES_MIN_HEIGHT = 80
+IMAGES_MIN_WIDTH = 80
+MEDIA_ALLOW_REDIRECTS = True
+IMAGES_EXPIRES = 1  # How many days images stay current
+DOWNLOAD_DELAY = 2.0  # 1 second delay between requests
+AUTOTHROTTLE_ENABLED = True
+# FEED_FORMAT = "csv"  # save results to CSV, JSON or XML
+# FEED_URI = "myspider.csv"  # results filename
