@@ -1,5 +1,6 @@
 import bs4
 
+
 def get_faq(soup):
     lista = []
 
@@ -22,17 +23,19 @@ def get_faq(soup):
     for i in range(0, len(perguntas)):
         lista.append(
             {
-             "pergunta": perguntas[i].text.strip(),
-             "respostas": respostas[i].text if i < len(respostas) else ""
+                "pergunta": perguntas[i].text.strip(),
+                "respostas": respostas[i].text if i < len(respostas) else ""
             }
         )
 
     return lista
 
 
-if __name__ == '__main__':
+# Usar from utils.GetQuestionsAmazon import run_amazon
+# A função retorna uma lista de perguntas e respostas
+def run_amazon():
     from os import walk
-    directory = '../arquivos/'
+    directory = '../arquivos/B001E5MO5E/'
     faq_list = []
     cont = 0
     for (dirpath, dirnames, filenames) in walk(directory):
@@ -41,7 +44,4 @@ if __name__ == '__main__':
             soup = bs4.BeautifulSoup(html, 'html.parser')
             faq = get_faq(soup)
             faq_list.append(faq)
-    for faq_li in faq_list:
-        cont += len(faq_li)
-    print(faq_list)
-    print(cont)
+    return faq_list

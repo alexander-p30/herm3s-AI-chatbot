@@ -1,6 +1,9 @@
 import scrapy
 
 
+# Criar um diretório com nome 'arquivos' a partir do diretório do projeto
+# Dentro do diretório 'arquivos' criar um diretório chamado 'B001E5MO5E'
+# Rodar no terminar 'scrapy runspider spiders/Amazon.py'
 class HermesSpiderAmazon(scrapy.Spider):
     name = "HermesSpiderAmazon"
     start_urls = ["https://www.amazon.com.br/ask/questions/asin/B001E5MO5E"]
@@ -9,7 +12,7 @@ class HermesSpiderAmazon(scrapy.Spider):
 
     def parse(self, response):
         next_page = []
-        filename = 'arquivos/amazon-%s.html' % self.cont
+        filename = 'arquivos/B001E5MO5E/amazon-%s.html' % self.cont
         self.cont += 1
         with open(filename, 'wb') as f:
             f.write(response.body)
