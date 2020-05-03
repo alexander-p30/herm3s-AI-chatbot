@@ -1,6 +1,6 @@
 import bs4
 
-html = open('arquivos/mercado_livre.html')
+html = open('../arquivos/mercado_livre.html')
 soup = bs4.BeautifulSoup(html, 'html.parser')
 
 lista = []
