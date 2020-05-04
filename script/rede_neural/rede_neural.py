@@ -35,14 +35,7 @@ elementos_embed = embed1.shape[1]
 input_camada_tamanho = 2 * elementos_embed + 2*grau + sum(range(grau))
 
 # Gerar X
-for i in range(m):
-    polinomio = obterCombinacoes(fw, spy, grau)
-
-    ex = np.concatenate((embed1, embed2, polinomio), axis=1)
-    if i==0:
-        X = ex
-    else:
-        X = np.concatenate((X, ex), axis=0)
+X = np.concatenate((embed1, embed2, obterCombinacoes(fw, spy, grau)), axis=1)
 
 # print('Tamanho de X:', X.shape, 'Tamanho de y:', y.shape)
 # normalizar as entradas (desnecessário para o método de otimização atual)
