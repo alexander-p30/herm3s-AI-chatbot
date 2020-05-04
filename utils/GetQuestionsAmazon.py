@@ -35,12 +35,12 @@ def get_faq(soup):
 # A função retorna uma lista de perguntas e respostas
 def run_amazon():
     from os import walk
-    directory = '../arquivos/B001E5MO5E/'
+    directory = 'arquivos/B001E5MO5E/'
     faq_list = []
     cont = 0
     for (dirpath, dirnames, filenames) in walk(directory):
         for filename in filenames:
-            html = open(directory + filename)
+            html = open(directory + filename, encoding="utf8")
             soup = bs4.BeautifulSoup(html, 'html.parser')
             faq = get_faq(soup)
             faq_list.append(faq)
