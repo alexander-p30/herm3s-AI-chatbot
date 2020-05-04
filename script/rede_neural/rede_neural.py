@@ -1,15 +1,21 @@
 from .base import *
+from ::Modules import PreprocessamentoTreinamentoAI
 # MODELO
 #   Rede neural em 3 camadas: 604 - 200 - 1. 
 
 # CARREGAR OS EXEMPLOS AQUI (vetores de m linhas), remover essas funções aleatorias
 # entrada
-embed1 = np.random.rand(100, 10) * 100
-embed2 = np.random.rand(100, 10) * 100
-fw = (np.random.rand(100, 1) * 100) //1
-spy = np.random.rand(100, 1) * 10
+Init = PreprocessamentoTreinamentoAI.InicializarAI()
+spacy = Init[0]
+ft = Init[1]
+Init = PreprocessamentoTreinamentoAI.Treinamento(spacy, ft)
+
+embed1 = Init[0]
+embed2 = Init[1]
+fw = Init[2]
+spy = Init[3]
 # saída
-y = np.random.random((100, 1)).round()
+y = Init[4]
 
 # Configurações
 # numero de exemplos
