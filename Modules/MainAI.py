@@ -4,7 +4,7 @@ import spacy
 import fasttext
 
 def InicializarAI():
-	ft_model = fasttext.load_model('cc.pt.300.bin')
+	ft_model = fasttext.load_model('cc.pt.50.bin')
 	spacy_nlp = spacy.load("pt_core_news_sm")
 
 	return [spacy_nlp, ft_model]
