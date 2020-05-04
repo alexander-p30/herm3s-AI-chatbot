@@ -132,7 +132,7 @@ def otimizar(theta, input_camada_tamanho, hidden_camada_tamanho, X, y, lmbd, max
 # retorna 2 vetores: o primeiro mede a variacao do custo conforme se aumenta o grau das combinações, o segundo mede conforme se aumenta lambda
 # cada linha do vetor representa o resultado do experimento com um valor diferente de grau/lambda, e as colunas são:
 #   a primeira é o valor experimentado de grau/lambda, a segunda é o custo observado no conjunto de exemplos de treino e a terceira o custo observado no conjunto de exemplos de CV
-def AnaliseDeCombinacaoELambda(hidden_camada_tamanho, embeds, fw, spy, y, lmbd, fractions, max):
+def AnaliseDeCombinacaoELambda(hidden_camada_tamanho, embeds, fw, spy, y, lmbd, fractions, max, n_graus = (1, 5), l_set = [0.001, 0.003, 0.01, 0.03, 0.1, 0.3, 1, 3, 10, 30]):
     # separa os y's
     (y, y_cv, _) = dividirExemplos(y, (6, 2, 2))
     
@@ -142,7 +142,7 @@ def AnaliseDeCombinacaoELambda(hidden_camada_tamanho, embeds, fw, spy, y, lmbd, 
     
     # custos por grau
     print('Calculando custos por grau...')
-    for p in range(1, 6):
+    for p in range(n_graus[0], n_graus[1]+1):
         # ajustar entrada
         X = np.concatenate((embeds, obterCombinacoes(fw, spy, p)), axis=1)
         # print('Tamanho total de X:', X.shape)
@@ -188,7 +188,6 @@ def AnaliseDeCombinacaoELambda(hidden_camada_tamanho, embeds, fw, spy, y, lmbd, 
     # lambda 0 pq é para avaliar o custo final, e não para ser utilizado na otimização
     J = lambda theta, x, yl : funcaoCusto(theta, input_camada_tamanho, hidden_camada_tamanho, x, yl, 0)[0]
 
-    l_set = [0.001, 0.003, 0.01, 0.03, 0.1, 0.3, 1, 3, 10, 30]
     for l in l_set:
         # otimizar
         # print(nn_params[0:2], input_camada_tamanho, hidden_camada_tamanho, X[0:2], y[0:2], l, sep='\n')
@@ -286,7 +285,7 @@ def AnalisarDesempenho(nn_params, input_camada_tamanho, hidden_camada_tamanho, X
     v_p = np.count_nonzero(resultado == 2)
     v_n = np.count_nonzero(resultado == 0)
     
-    print(h, y, resultado, sep='\n------\n')
+    # print(h, y, resultado, sep='\n------\n')
     
     # exatidão
     exatidao = (v_p + v_n)/resultado.size
