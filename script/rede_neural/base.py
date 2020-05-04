@@ -11,7 +11,7 @@ def obterCombinacoes(a, b, n):
     else:
         combinar = lambda a,b,i,m : a**i * b**(m-i)
     
-    for m in (np.array(range(n))+1):
+    for m in range(1, n+1):
         for i in range(m+1):
             aux = combinar(a, b, i, m)
             if m==1 and i==0:
@@ -22,7 +22,6 @@ def obterCombinacoes(a, b, n):
     return ret
 
 def gerarInputAleatorio(m, elements, grau):
-    ret = [[None]]
     for i in range(m):
         # fazer 2 vetores de elements floats aleatorios
         embed1 = np.random.rand(1, elements) * 100
@@ -82,6 +81,8 @@ def funcaoCusto(nn_params, input_camada_tamanho, hidden_camada_tamanho, X, y, lm
     theta2_i = theta2[:, 1:]
 
     J = (np.sum(-y * (np.log(h)) - (1 - y) * (np.log(1 - h))) + (lmbd/2) * (np.sum(theta1_i*theta1_i) + np.sum(theta2_i*theta2_i))) / m
+    # if m == 0:
+    #     print('OLHA O M:',m)
 
     # bac. propagation
     d3 = h - y
@@ -124,23 +125,24 @@ def gradientesNumericos(J, theta):
         perturbacao[i] = 0
     return numgrad
 
-def otimizar(theta, input_camada_tamanho, hidden_camada_tamanho, X, y, lmbd):
-    ret = opt.fmin_cg(lambda x : funcaoCusto(x, input_camada_tamanho, hidden_camada_tamanho, X, y, lmbd)[0], theta, fprime=(lambda x : funcaoCusto(x, input_camada_tamanho, hidden_camada_tamanho, X, y, lmbd)[1]), maxiter=700)
+def otimizar(theta, input_camada_tamanho, hidden_camada_tamanho, X, y, lmbd, max):
+    ret = opt.fmin_cg(lambda x : funcaoCusto(x, input_camada_tamanho, hidden_camada_tamanho, X, y, lmbd)[0], theta, fprime=(lambda x : funcaoCusto(x, input_camada_tamanho, hidden_camada_tamanho, X, y, lmbd)[1]), maxiter=max)
     return ret.reshape(ret.size, 1)
 
 # retorna 2 vetores: o primeiro mede a variacao do custo conforme se aumenta o grau das combinações, o segundo mede conforme se aumenta lambda
 # cada linha do vetor representa o resultado do experimento com um valor diferente de grau/lambda, e as colunas são:
 #   a primeira é o valor experimentado de grau/lambda, a segunda é o custo observado no conjunto de exemplos de treino e a terceira o custo observado no conjunto de exemplos de CV
-def AnaliseDeCombinacaoELambda(hidden_camada_tamanho, embeds, fw, spy, y, lmbd, fractions):
+def AnaliseDeCombinacaoELambda(hidden_camada_tamanho, embeds, fw, spy, y, lmbd, fractions, max):
     # separa os y's
     (y, y_cv, _) = dividirExemplos(y, (6, 2, 2))
     
     # interface amigavel para o custo
+    # lambda 0 pq é para avaliar o custo final, e não para ser utilizado na otimização
     J = lambda theta, size, X, yl : funcaoCusto(theta, size, hidden_camada_tamanho, X, yl, 0)[0]
     
     # custos por grau
     print('Calculando custos por grau...')
-    for p in np.array(range(5))+1:
+    for p in range(1, 6):
         # ajustar entrada
         X = np.concatenate((embeds, obterCombinacoes(fw, spy, p)), axis=1)
         # print('Tamanho total de X:', X.shape)
@@ -156,7 +158,7 @@ def AnaliseDeCombinacaoELambda(hidden_camada_tamanho, embeds, fw, spy, y, lmbd, 
         # print('Tamanhos de theta1, theta2 e nn_params:', theta1.shape, theta2.shape, nn_params.shape)
 
         # otimizar
-        theta = otimizar(nn_params, input_camada_tamanho, hidden_camada_tamanho, X, y, lmbd)
+        theta = otimizar(nn_params, input_camada_tamanho, hidden_camada_tamanho, X, y, lmbd, max)
         # print('Tamanho de theta final e seu tipo:', theta.shape, type(theta))
         # salvar os custos
         if p == 1:
@@ -183,15 +185,119 @@ def AnaliseDeCombinacaoELambda(hidden_camada_tamanho, embeds, fw, spy, y, lmbd, 
     nn_params = np.array([np.concatenate((theta1,theta2), axis=None)]).T
 
     # interface amigavel para o custo
+    # lambda 0 pq é para avaliar o custo final, e não para ser utilizado na otimização
     J = lambda theta, x, yl : funcaoCusto(theta, input_camada_tamanho, hidden_camada_tamanho, x, yl, 0)[0]
 
     l_set = [0.001, 0.003, 0.01, 0.03, 0.1, 0.3, 1, 3, 10, 30]
     for l in l_set:
         # otimizar
-        theta = otimizar(nn_params, input_camada_tamanho, hidden_camada_tamanho, X, y, l)
+        # print(nn_params[0:2], input_camada_tamanho, hidden_camada_tamanho, X[0:2], y[0:2], l, sep='\n')
+        theta = otimizar(nn_params, input_camada_tamanho, hidden_camada_tamanho, X, y, l, max)
         # salvar os custos
         if l == l_set[0]:
             custos_por_lambda = np.array([[l, J(theta, X, y), J(theta, X_cv, y_cv)]])
         else:
             custos_por_lambda = np.concatenate((custos_por_lambda, np.array([[l, J(theta, X, y), J(theta, X_cv, y_cv)]])), axis=0)
+    print('Grau selecionado:', min_p)
     return custos_por_grau, custos_por_lambda
+# gera uma matriz n x 3
+# as linhas correspondem a um valor de tamanho de conjunto de exemplos utilizado na análise
+# as colunas correspondem a: o tamanho do conjunto utilizado, o custo em treinamento, o custo em cross validation
+def CurvaDeAprendizado(n, input_camada_tamanho, hidden_camada_tamanho, X, y, lmbd, fractions, max):
+    (X, X_cv, _) = dividirExemplos(X, fractions)
+    (y, y_cv, _) = dividirExemplos(y, fractions)
+    # obter m
+    m = X.shape[0]
+
+    # impede o usuário de pedir mais iterações do que existem exemplos
+    if n > m:
+        n = m
+        print('Aviso: A quantidade de iterações solicitada é maior do que a quantidade de exemplos de treinamento obtida. Serão realizadas apenas', n, 'iterações.')
+
+    # interface amigável para o custo
+    # lambda 0 pq é para avaliar o custo final, e não para ser utilizado na otimização
+    J = lambda theta, Xj, yj : funcaoCusto(theta, input_camada_tamanho, hidden_camada_tamanho, Xj, yj, 0)[0]
+
+    for k in range(1, n+1):
+        qtd_exemplos = m * k//n
+        # linhas de exemplo a serem selecionadas para essa iteração
+        linhas = np.random.permutation(m)[0 : qtd_exemplos]
+        X_it = X[linhas]
+        y_it = y[linhas]
+
+        # pesos iniciais
+        theta1 = (np.random.rand(hidden_camada_tamanho, input_camada_tamanho+1) * (2 * 0.12)) - 0.12
+        theta2 = (np.random.rand(1, hidden_camada_tamanho+1) * (2 * 0.12)) - 0.12
+        nn_params = np.array([np.concatenate((theta1,theta2), axis=None)]).T
+
+        # otimizar
+        theta = otimizar(nn_params, input_camada_tamanho, hidden_camada_tamanho, X_it, y_it, lmbd, max)
+        # salvar os custos
+        if k == 1:
+            ret = np.array([[qtd_exemplos, J(theta, X_it, y_it), J(theta, X_cv, y_cv)]])
+        else:
+            ret = np.concatenate((ret, np.array([[qtd_exemplos, J(theta, X_it, y_it), J(theta, X_cv, y_cv)]])), axis=0)
+    return ret
+
+# retorna uma tupla:
+# exatidão (accuracy), precisão (precision), revocação (recall) e medida F (F1, F measure)
+# fronteira é um numero entre 0 e 1 tal que se h >= fronteira, h pode ser considerado uma previsão positiva (1)
+def AnalisarDesempenho(nn_params, input_camada_tamanho, hidden_camada_tamanho, X, y, lmbd, fractions, fronteira):
+    # obter os exemplos de teste
+    (_, _, X) = dividirExemplos(X, fractions)
+    (_, _, y) = dividirExemplos(y, fractions)
+    # custo
+    J = funcaoCusto(nn_params, input_camada_tamanho, hidden_camada_tamanho, X, y, lmbd)[0]
+
+    # previsão
+    # recuperar os thetas
+    # print(nn_params.shape)
+    theta1 = np.reshape(nn_params[:hidden_camada_tamanho*(input_camada_tamanho+1)], (hidden_camada_tamanho, input_camada_tamanho+1))
+    theta2 = np.reshape(nn_params[hidden_camada_tamanho*(input_camada_tamanho+1):], (1, hidden_camada_tamanho+1))
+    # print('Thetas recuperados:', theta1[0:2], theta2[0:2])
+
+    # for. propagation
+    m = X.shape[0]
+    a1 = np.concatenate((np.ones((m, 1)), X), axis=1)
+    z2 = a1.dot(theta1.T)
+    a2 = sp.expit(z2)   # sigmoid
+    a2 = np.concatenate((np.ones((m, 1)), a2), axis=1)
+
+    z3 = a2.dot(theta2.T)
+    h = sp.expit(z3)
+
+    # aplicar a fronteira
+    h = h >= fronteira
+
+    # relações:
+    resultado = h - y + (h * y * 2)
+    # estrutura:
+    # h y - resultado
+    # 0 1 -   -1
+    # 1 0 -    1
+    # 1 1 -    2
+    # 0 0 -    0
+    # qtd de -1: falsos negativos
+    # qtd de  1: falsos positivos
+    # qtd de  2: verdadeiros positivos
+    # qtd de  0: verdadeiros falsos
+    f_n = np.count_nonzero(resultado == -1)
+    f_p = np.count_nonzero(resultado == 1)
+    v_p = np.count_nonzero(resultado == 2)
+    v_n = np.count_nonzero(resultado == 0)
+    
+    print(h, y, resultado, sep='\n------\n')
+    
+    # exatidão
+    exatidao = (v_p + v_n)/resultado.size
+    # precisão e revocação
+    precisao = v_p / (v_p + f_p)
+    revocacao = v_p / (v_p + f_n)
+    # medida F
+    F1 = 2*revocacao*precisao / (revocacao + precisao)
+    return exatidao, precisao, revocacao, F1
+
+def RecuperarPesos():
+    with open('pesos.txt', 'r') as f:
+        inp = f.read()
+    return np.array(np.mat(inp)).T
