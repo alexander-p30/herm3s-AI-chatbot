@@ -41,6 +41,25 @@ X = np.concatenate((embed1, embed2, obterCombinacoes(fw, spy, grau)), axis=1)
 # normalizar as entradas (desnecessário para o método de otimização atual)
 # X = normalizar(X)[0]
 
+# retorna uma tupla: (previsão (gerada com base na fronteira), probabilidade (resultado da rede neural))
+def PrevisaoPara(embed1t, embed2t, fwt, spyt):
+    # recuperar os thetas
+    pesos = RecuperarPesos()
+    theta1 = np.reshape(pesos[:hidden_camada_tamanho*(input_camada_tamanho+1)], (hidden_camada_tamanho, input_camada_tamanho+1))
+    theta2 = np.reshape(pesos[hidden_camada_tamanho*(input_camada_tamanho+1):], (1, hidden_camada_tamanho+1))
+
+    # for. propagation
+    a1 = np.concatenate((np.ones((m, 1)), X), axis=1)
+    z2 = a1.dot(theta1.T)
+    a2 = sp.expit(z2)   # sigmoid
+    a2 = np.concatenate((np.ones((m, 1)), a2), axis=1)
+    z3 = a2.dot(theta2.T)
+    h = sp.expit(z3)
+
+    # aplicar a fronteira
+    previsao = (h >= fronteira).astype(int)
+    return previsao, h
+
 def GerarParametros(output=False):
     # popular os thetas com valores iniciais aleatórios: theta1(hidden_camada_tamanho x input_camada_tamanho+1), theta2(1 x hidden_camada_tamanho+1)
     # inicializamos os pesos entre -margem e +margem
@@ -63,8 +82,6 @@ def GerarParametros(output=False):
     # registrar pesos novos
     with open('pesos.txt', 'w') as f:
         otimizacao.tofile(f, sep=",")
-    
-# O RESTO ESTA EM DESENVOLVIMENTO
     
 def GradientChecking():
     pesos = RecuperarPesos()
