@@ -4,12 +4,12 @@ from .base import *
 
 # CARREGAR OS EXEMPLOS AQUI (vetores de m linhas), remover essas funções aleatorias
 # entrada
-embed1 = np.random.rand(10, 10) * 100
-embed2 = np.random.rand(10, 10) * 100
-fw = (np.random.rand(10, 1) * 100) //1
-spy = np.random.rand(10, 1) * 10
+embed1 = np.random.rand(100, 10) * 100
+embed2 = np.random.rand(100, 10) * 100
+fw = (np.random.rand(100, 1) * 100) //1
+spy = np.random.rand(100, 1) * 10
 # saída
-y = np.random.random((10, 1)).round()
+y = np.random.random((100, 1)).round()
 
 # Configurações
 # numero de exemplos
@@ -66,53 +66,43 @@ def GerarParametros(output=False):
     
 # O RESTO ESTA EM DESENVOLVIMENTO
     
-# def GradientChecking()
-    
+def GradientChecking():
+    pesos = RecuperarPesos()
+    (_, grad) = funcaoCusto(pesos, input_camada_tamanho, hidden_camada_tamanho, X, y, lmbd)
 
+    # Verificação de gradientes iniciais:
+    D1 = np.reshape(grad[:hidden_camada_tamanho*(input_camada_tamanho+1)], (hidden_camada_tamanho, input_camada_tamanho+1))
+    D2 = np.reshape(grad[hidden_camada_tamanho*(input_camada_tamanho+1):], (1, hidden_camada_tamanho+1))
 
-# # Verificação de gradientes iniciais:
-# # D1 = np.reshape(grad[:hidden_camada_tamanho*(input_camada_tamanho+1)], (hidden_camada_tamanho, input_camada_tamanho+1))
-# # D2 = np.reshape(grad[hidden_camada_tamanho*(input_camada_tamanho+1):], (1, hidden_camada_tamanho+1))
-# # print('Gradientes:', D1, D2)
+    # gradient checking
+    numgrad = gradientesNumericos(lambda t : funcaoCusto(t, input_camada_tamanho, hidden_camada_tamanho, X, y, lmbd)[0], pesos)
+    numericalD1 = np.reshape(numgrad[:hidden_camada_tamanho*(input_camada_tamanho+1)], (hidden_camada_tamanho, input_camada_tamanho+1))
+    numericalD2 = np.reshape(numgrad[hidden_camada_tamanho*(input_camada_tamanho+1):], (1, hidden_camada_tamanho+1))
+    # print('Gradientes numéricos:', numericalD1, numericalD2)
+    print('Gradient check: média dos erros:', np.mean(np.concatenate((D1-numericalD1, D2-numericalD2), axis=None)))
 
-# # gradient checking
-# numgrad = gradientesNumericos(lambda t : funcaoCusto(t, input_camada_tamanho, hidden_camada_tamanho, X, y, lmbd)[0], nn_params)
-# numericalD1 = np.reshape(numgrad[:hidden_camada_tamanho*(input_camada_tamanho+1)], (hidden_camada_tamanho, input_camada_tamanho+1))
-# numericalD2 = np.reshape(numgrad[hidden_camada_tamanho*(input_camada_tamanho+1):], (1, hidden_camada_tamanho+1))
-# # print('Gradientes numéricos:', numericalD1, numericalD2)
-# print('Gradient check', np.mean(np.concatenate((D1-numericalD1, D2-numericalD2), axis=None)))
+# retorna uma tupla
+# 1 - vetor de custos por grau (grau, custo em treino, custo em cross validation)
+# 2 - vetor de custos por lambda (grau, custo em treino, custo em cross validation)
+# 3 - grau otimo encontrado
+# 4 - lambda otimo encontrado
+def AnaliseCustos(n_graus = (1, 5), l_set = [0.001, 0.003, 0.01, 0.03, 0.1, 0.3, 1, 3, 10, 30]):
+    (custos_grau, custos_lambda) = AnaliseDeCombinacaoELambda(hidden_camada_tamanho, np.concatenate((embed1, embed2), axis=1), fw, spy, y, lmbd, fracoes, max, n_graus, l_set)
 
+    # selecionar o grau e lambda mais promissores
+    min_p_i = np.argmin(custos_grau, axis=0)[2]
+    grau_o = int(custos_grau[min_p_i, 0])
+    min_l_i = np.argmin(custos_lambda, axis=0)[2]
+    lmbd_o = custos_lambda[min_l_i, 0]
+    return custos_grau, custos_lambda, grau_o, lmbd_o
 
-# input('Pressione enter para continuar')
+# gera uma matriz n x 3
+# as linhas correspondem a um valor de tamanho de conjunto de exemplos utilizado na análise
+# as colunas correspondem a: o tamanho do conjunto utilizado, o custo em treinamento, o custo em cross validation
+def AnaliseCurvaAprendizado(n = 20):
+    return CurvaDeAprendizado(n, input_camada_tamanho, hidden_camada_tamanho, X, y, lmbd, fracoes, max)
 
-# # análise de custos por grau e lambda
-# pos = elementos_embed*2
-# # print('fwd e spy:', X[:, pos+1:pos+2], X[:, pos:pos+1])
-# (custos_grau, custos_lambda) = AnaliseDeCombinacaoELambda(hidden_camada_tamanho, X[:, 0:pos], X[:, pos+1:pos+2], X[:, pos:pos+1], y, lmbd, fracoes, max)
-# print('Custos por grau:\n', custos_grau, '\nCustos por lambda:\n', custos_lambda)
-
-# # selecionar o grau e lambda mais promissores
-# min_p_i = np.argmin(custos_grau, axis=0)[2]
-# grau = int(custos_grau[min_p_i, 0])
-# min_l_i = np.argmin(custos_lambda, axis=0)[2]
-# lmbd = custos_lambda[min_l_i, 0]
-# input_camada_tamanho = 2 * elementos_embed + 2*grau + sum(range(grau))
-# X = gerarInputAleatorio(m, elementos_embed, grau)
-# print('Grau e lambda otimos:', grau, lmbd)
-
-# theta1 = (np.random.rand(hidden_camada_tamanho, input_camada_tamanho+1) * (2 * 0.12)) - 0.12
-# theta2 = (np.random.rand(1, hidden_camada_tamanho+1) * (2 * 0.12)) - 0.12
-# # print('Thetas formados:', theta1, theta2)
-
-# # # função custo e gradientes
-# nn_params = np.array([np.concatenate((theta1,theta2), axis=None)]).T
-# nn_params = otimizar(nn_params, input_camada_tamanho, hidden_camada_tamanho, X, y, lmbd, max)
-
-# input('Pressione enter para continuar')
-# # análise de curva de aprendizado
-# curva_aprendizado = CurvaDeAprendizado(20, input_camada_tamanho, hidden_camada_tamanho, X, y, lmbd, fracoes, max)
-# print('Resultados da curva de aprendizado:\n', curva_aprendizado)
-
-# # análise de desempenho
-# desempenho = AnalisarDesempenho(nn_params, input_camada_tamanho, hidden_camada_tamanho, X, y, lmbd, fracoes, fronteira)
-# print('Exatidão:', desempenho[0], 'Precisão:', desempenho[1], 'Revocação:', desempenho[2], 'Medida F:', desempenho[3])
+# retorna uma tupla:
+# exatidão (accuracy), precisão (precision), revocação (recall) e medida F (F1, F measure)
+def AnaliseDesempenho():
+    return AnalisarDesempenho(RecuperarPesos(), input_camada_tamanho, hidden_camada_tamanho, X, y, lmbd, fracoes, fronteira)
