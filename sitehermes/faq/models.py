@@ -7,3 +7,9 @@ class Faq(models.Model):
 
     class Meta:
         verbose_name = 'Faq de perguntas e respostas'
+
+
+class Product(models.Model):
+    name = models.CharField(max_length=200)
+    link_image = models.CharField(max_length=400)
+    desc = models.CharField(max_length=300)
