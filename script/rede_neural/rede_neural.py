@@ -1,5 +1,5 @@
-from .base import *
-from ::Modules import PreprocessamentoTreinamentoAI
+from script.rede_neural.base import *
+from Modules import PreprocessamentoTreinamentoAI
 # MODELO
 #   Rede neural em 3 camadas: 604 - 200 - 1. 
 
@@ -10,12 +10,12 @@ spacy = Init[0]
 ft = Init[1]
 Init = PreprocessamentoTreinamentoAI.Treinamento(spacy, ft)
 
-embed1 = Init[0]
-embed2 = Init[1]
-fw = Init[2]
-spy = Init[3]
+embed1 = np.array(Init[0])
+embed2 = np.array(Init[1])
+fw = np.array(Init[2])
+spy = np.array(Init[3])
 # saída
-y = Init[4]
+y = np.array(Init[4])
 
 # Configurações
 # numero de exemplos
@@ -43,7 +43,7 @@ input_camada_tamanho = 2 * elementos_embed + 2*grau + sum(range(grau))
 # Gerar X
 X = np.concatenate((embed1, embed2, obterCombinacoes(fw, spy, grau)), axis=1)
 
-# print('Tamanho de X:', X.shape, 'Tamanho de y:', y.shape)
+print('Tamanho de X:', X.shape, 'Tamanho de y:', y.shape)
 # normalizar as entradas (desnecessário para o método de otimização atual)
 # X = normalizar(X)[0]
 
