@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from .models import Product
 from .forms import FormsFaq
+from utils.compare_questions import compare_question_amazon_product
 # Create your views here.
 
 
@@ -22,8 +23,16 @@ def show(request, **kwargs):
     if form.is_valid():
         # Coleta a pergunta do formulário
         pergunta = form.cleaned_data.get('pergunta')
-        reposta = "Resposta Padrão"
-        context["resposta"] = reposta
+        reposta = compare_question_amazon_product(pergunta)
+        context["resposta"] = reposta[1]["respostas"]
+        context["porcentagem"] = reposta[0]
+        context["pergunta"] = reposta[1]["pergunta"]
     context["form"] =form
+    return render(request, template_name, context)
+
+def about(request):
+    template_name = 'about.html'
+
+    context = {}
     return render(request, template_name, context)
 

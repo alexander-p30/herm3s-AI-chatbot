@@ -2,20 +2,26 @@
 
 {% block content %}
 
-    <div class="text-center">
-        <div style="display:flex; flex-direction: row; padding: 50px 150px 0px 150px">
-            <div style="width: 25%">
+    <div class="d-flex justify-content-around align-items-center" style="padding-top: 175px">
+
+            <div style="padding-left: 100px">
                 <h3>{{ Product.name }} </h3>
-                <img alt="Imagem Xaomi "width="350" height="350" style="box-shadow: 0px 0px 2px 3px rgba(0,0,0,0.53);" src="{{ Product.link_image }}">
+                <div style="padding-left: 100px">
+                    <img alt="Imagem Xaomi "width="350" height="350" style="box-shadow: 0px 0px 2px 3px rgba(0,0,0,0.53);" src="{{ Product.link_image }}">
+                </div>
             </div>
-            <div style="text-align: justify; padding: 100px 0 0 80px">
+            <div style="padding-right: 100px">
             <p>
                 Carregador portátil para aparelhos eletrônicos.<br>
                 Conta com 2000mAh, suficiente para carregar um smartphone atual.<br>
                 Funciona para iPhone e qualquer celular Samsung. Não recomendado para Nokia.<br>
                 Frete grátis para todo o Brasil.
             </p>
-                <div style="padding-top: 30px">
+                <p class="font-weight-bolder"> Perguntas sugeridas:</p>
+                <p> "Funciona para iphone?" <br>
+                 "Quanto ele pesa?" <br>
+                 "Tem vermelho?"</p>
+                <div>
                     <form action="" method="post">
                         {% csrf_token %}
                         <div class="form-group">
@@ -30,7 +36,9 @@
                             <br>
                             <br>
                             {% if resposta %}
-                                {{ resposta }}
+                                <p>Encontramos uma pergunta semelhante: {{ pergunta }}</p>
+                                <p>Essa foi a resposta: {{ resposta }}</p>
+                                <p></p>
                             {% endif %}
                         </div>
                     </form>
@@ -38,7 +46,7 @@
                     
                 </div>
             </div>
-        </div>
+
     </div>
 
 {% endblock %}
