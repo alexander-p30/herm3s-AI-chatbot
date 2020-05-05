@@ -1,3 +1,11 @@
-.teste {
-    background-color: #b7efcd;
+.bgColor {
+    background-color: #d4d7dd;
+}
+
+.fontSize {
+    font-size: 18px;
+}
+
+.indent {
+    text-indent: 5em;
 }

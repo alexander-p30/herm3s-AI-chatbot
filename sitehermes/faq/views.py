@@ -27,3 +27,9 @@ def show(request, **kwargs):
     context["form"] =form
     return render(request, template_name, context)
 
+def about(request):
+    template_name = 'about.html'
+
+    context = {}
+    return render(request, template_name, context)
+

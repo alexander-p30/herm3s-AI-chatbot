@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <main role="main">
+
+        <section class="jumbotron text-center">
+            <div class="container">
+                <h1>Conheça mais sobre o Hermes</h1>
+            </div>
+        </section>
+        <p class="lead text-dark text-justify ml-5 mr-5 indent">
+            O setor de comércio eletrônico, ou e-commerce, tem crescido ano após ano. Segundo a 40ª edição do
+            relatório Webshoppers da E-bit, somente em 2018 o faturamento do e-commerce foi de R$133 bilhões no
+            Brasil, país com a maior receita no setor de toda a América Latina, contando com 36% da população
+            como compradores digitais. Ou seja, o e-commerce já é um setor de peso na economia brasileira.
+        </p>
+        <p class="lead text-dark text-justify ml-5 mr-5 indent">
+            Entretanto, vivemos uma situação sem precedentes, em que inúmeros varejistas são obrigados a fechar
+            as suas lojas devido à pandemia causada pelo novo coronavírus. Imagine o impacto que essa massa de
+            vendedores migrando para o e-commerce pode causar nos números desse setor.
+        </p>
+        <p class="lead text-dark text-justify ml-5 mr-5 indent">
+            Não somente muitos vendedores estão tendo sua primeira experiência online, mas muitos compradores
+            também, já que inúmeros produtos não podem mais ser adquiridos de forma presencial. O número massivo
+            de compradores online, e às vezes a falta de prática, fazem com que vendedores enfrentem demandas
+            que, por vezes, podem sobrecarregá-los. Os compradores, por outro lado, se deparam com anúncios que
+            apresentam descrições incompletas, ou não conseguem encontrar as informações que precisam de forma
+            intuitiva.
+        </p>
+        <p class="lead text-dark text-justify ml-5 mr-5 indent">
+            Na intenção de aliviar a carga de trabalho do vendedor e melhorar a experiência de compra do usuário,
+            nós apresentamos o Hermes: uma inteligência artificial capaz de aprender e oferecer respostas à
+            perguntas semelhantes em relação a um produto e também de oferecer informações essenciais, exemplos
+            de anúncios similares e reviews do produto a venda para auxiliar o anunciante em sua tarefa.
+            Com apenas algumas respostas do vendedor, a inteligência artificial do Hermes consegue associar
+            perguntas à respostas e automatizar o serviço de respondê-las. Além disso, durante a montagem do
+            anúncio, o vendedor pode escolher por receber informações chave coletadas de outros anúncios com
+            produtos similares, para que consiga tornar a venda mais completa e atrativa. Isso tudo dentro da
+            própria página do e-commerce utilizado.
+        </p>
+        <p class="lead text-dark text-justify ml-5 mr-5 indent">
+            O Hermes alivia, assim, o trabalho repetitivo do vendedor de responder perguntas iguais e facilita
+            seu esforço de montar um bom anúncio, assim como torna a experiência de compra do usuário mais
+            fluida ao responder suas dúvidas instantaneamente e ao mostrar as características mais procuradas
+            por esse público nos anúncios.
+        </p>
+        <p class="lead text-dark text-justify ml-5 mr-5 indent">
+            Qualquer e-commerce pode recorrer aos serviços do Hermes para tornar sua plataforma mais competitiva.
+            Você, que gerencia um e-commerce, pode contar conosco para ajudar seus vendedores de primeira viagem,
+            ou para desafogar e turbinar os anúncios de seus vendedores mais experientes. Juntos, transformaremos
+            o e-commerce na verdadeira alternativa para a atual crise do comércio.
+        </p>
+
+        <div class="d-flex justify-content-center align-items-center pt-3 pb-5">
+            <div class="btn-group">
+                <a href="{% url 'main' %}" class="btn btn-sm btn-outline-primary btn-info text-white fontSize">Voltar</a>
+            </div>
+        </div>
+    </main>
+
+{% endblock %}
