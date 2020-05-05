@@ -3,25 +3,40 @@
 {% block content %}
 
     <div class="text-center">
-        <h1>{{ Product.name }} </h1>
-        <div class="p-5">
-            <form action="" method="post">
-                {% csrf_token %}
-                <div class="form-group">
-                    {% for field in form %}
-                        {{ field.label }} <br><br>
-                        {{ field }}
-                        {{ field.help_text }} <br><br>
-                    {% endfor %}
+        <div style="display:flex; flex-direction: row; padding: 50px 150px 0px 150px">
+            <div style="width: 25%">
+                <h3>{{ Product.name }} </h3>
+                <img alt="Imagem Xaomi "width="350" height="350" style="box-shadow: 0px 0px 2px 3px rgba(0,0,0,0.53);" src="{{ Product.link_image }}">
+            </div>
+            <div style="text-align: justify; padding: 100px 0 0 80px">
+            <p>
+                Carregador portátil para aparelhos eletrônicos.<br>
+                Conta com 2000mAh, suficiente para carregar um smartphone atual.<br>
+                Funciona para iPhone e qualquer celular Samsung. Não recomendado para Nokia.<br>
+                Frete grátis para todo o Brasil.
+            </p>
+                <div style="padding-top: 30px">
+                    <form action="" method="post">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            {% for field in form %}
+                                {{ field.label }} <br><br>
+                                {{ field }}
+                                {{ field.help_text }} <br><br>
+                                <input onmouseover="this.style.backgroundColor='#001652'" onmouseout="this.style.backgroundColor=''"
+                                class="btn btn-outline-dark" type="submit" value="Perguntar">
+    
+                            {% endfor %}
+                            <br>
+                            <br>
+                            {% if resposta %}
+                                {{ resposta }}
+                            {% endif %}
+                        </div>
+                    </form>
+                
+                    
                 </div>
-                <input onmouseover="this.style.backgroundColor='#001652'" onmouseout="this.style.backgroundColor=''"
-                       class="btn btn-outline-dark" type="submit" value="Perguntar">
-            </form>
-
-            <div class="pt-5">
-                {% if resposta %}
-                    {{ resposta }}
-                {% endif %}
             </div>
         </div>
     </div>
