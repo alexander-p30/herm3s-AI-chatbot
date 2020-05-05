@@ -16,13 +16,6 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from faq import views
-
-urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('', views.main, name='main'),
-    path('product/<int:pk>', views.show, name='show')
-]
-
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.conf.urls.static import static
 from django.conf import settings

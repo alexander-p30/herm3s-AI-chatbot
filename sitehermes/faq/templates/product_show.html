@@ -15,6 +15,10 @@
                 Funciona para iPhone e qualquer celular Samsung. Não recomendado para Nokia.<br>
                 Frete grátis para todo o Brasil.
             </p>
+                <p class="font-weight-bolder"> Perguntas sugeridas:</p>
+                <p> Pergunte se funciona para iphone? <br>
+                 Pergunte quanto ele pesa? <br>
+                 Pergunte se tem vermelho?</p>
                 <div style="padding-top: 30px">
                     <form action="" method="post">
                         {% csrf_token %}
@@ -30,7 +34,9 @@
                             <br>
                             <br>
                             {% if resposta %}
-                                {{ resposta }}
+                                <p>Encontramos uma pergunta semelhante: {{ pergunta }}</p>
+                                <p>Essa foi a resposta: {{ resposta }}</p>
+                                <p></p>
                             {% endif %}
                         </div>
                     </form>

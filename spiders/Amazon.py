@@ -6,13 +6,13 @@ import scrapy
 # Rodar no terminar 'scrapy runspider spiders/Amazon.py'
 class HermesSpiderAmazon(scrapy.Spider):
     name = "HermesSpiderAmazon"
-    start_urls = ["https://www.amazon.com.br/ask/questions/asin/B001E5MO5E"]
+    start_urls = ["https://www.amazon.com.br/ask/questions/asin/B07R5PSTC9"]
     download_delay = 2.0
     cont = 0
 
     def parse(self, response):
         next_page = []
-        filename = 'arquivos/B001E5MO5E/amazon-%s.html' % self.cont
+        filename = 'arquivos/B07R5PSTC9/amazon-%s.html' % self.cont
         self.cont += 1
         with open(filename, 'wb') as f:
             f.write(response.body)
