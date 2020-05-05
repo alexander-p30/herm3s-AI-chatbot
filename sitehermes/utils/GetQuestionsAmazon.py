@@ -34,7 +34,7 @@ def get_faq(soup):
 # A função retorna uma lista de perguntas e respostas
 def run_amazon():
     from os import walk
-    directory = 'arquivos/B001E5MO5E/'
+    directory = '../arquivos/B001E5MO5E/'
     faq_list = []
     cont = 0
     for (dirpath, dirnames, filenames) in walk(directory):
