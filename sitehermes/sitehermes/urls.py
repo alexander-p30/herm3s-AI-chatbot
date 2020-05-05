@@ -22,3 +22,14 @@ urlpatterns = [
     path('', views.main, name='main'),
     path('product/<int:pk>', views.show, name='show')
 ]
+
+from django.contrib.staticfiles.urls import staticfiles_urlpatterns
+from django.conf.urls.static import static
+from django.conf import settings
+
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('', views.main, name='main'),
+    path('product/<int:pk>', views.show, name='show')
+] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+urlpatterns += staticfiles_urlpatterns()

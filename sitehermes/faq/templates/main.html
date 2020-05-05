@@ -7,23 +7,23 @@
         <section class="jumbotron text-center">
             <div class="container">
                 <h1>Conheça o Hermes</h1>
-                <p class="lead text-muted">Muito mais que um robo, reeinvente seu modo de imaginar um e-commerce.</p>
+                <p class="lead text-muted">Muito mais que um robo, reinvente seu modo de imaginar um e-commerce.</p>
             </div>
         </section>
 
-        <div class="album py-5 bg-light">
+        <div class="album py-5">
             <div class="container">
 
-                <div class="row">
+                <div class="row d-flex justify-content-center">
                     {% for product in Products %}
                     <div class="col-md-4">
                         <div class="card mb-4 shadow-sm">
-                            <img alt="Imagem Xaomi "width="100%" height="225" src="{{ product.link_image }}">
+                            <img alt="Imagem Xiaomi "width="100%" height="225" src="{{ product.link_image }}">
                             <div class="card-body">
-                                <p class="card-text">{{product.name}}. {{ product.desc }}</p>
-                                <div class="d-flex justify-content-between align-items-center">
+                                <p class="card-text">{{ product.name }}. {{ product.desc }}</p>
+                                <div class="d-flex justify-content-center align-items-center">
                                     <div class="btn-group">
-                                        <a href="{% url 'show' pk=product.id %}" class="btn btn-sm btn-outline-secondary">Pergunte ao Hermes</a>
+                                        <a href="{% url 'show' pk=product.id %}" class="btn btn-sm btn-outline-secondary btn-dark text-white">Pergunte ao Hermes</a>
                                     </div>
                                 </div>
                             </div>
